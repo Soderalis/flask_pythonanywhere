@@ -40,11 +40,13 @@ jobs:
         run: |
           echo "Envoi du code vers PythonAnywhere"
           echo "Voici le username utilisé (bon du coup il n'est plus très secret) : $USERNAME"
-          curl -v -X POST "https://www.pythonanywhere.com/api/v0/user/$USERNAME/files/path/home/$USERNAME/mysite/flask_app.py" \
+          curl -v -X POST "https://www.pythonanywhere.com/api/v0/user/jeandelarbrequicachelaforet/files/path/home/jeandelarbrequicachelaforet/mysite/flask_app.py" \
           -H "Authorization: Token $API_TOKEN" \
-          -F "content=@./app.py"  # nom du fichier sur le dépôt Git à envoyer
+          -F "content=@./app.py"  # nom du fichier sur le dépôt Git à envoyer, qui sera copié sur pythonanywhere sous le nom de flask_app.py
           # utilise le endpoint /api/v0/user/{username}/files/path{path}
           # cf : https://help.pythonanywhere.com/pages/API
+          # Après l'exécution de cette étape le fichier devrait s'être actualisé dans Pythonanywhere,
+          # c'est à dire à cet endroit : https://www.pythonanywhere.com/user/{TON_NOM_ICI}/files/home/{TON_NOM_ICI}/mysite/flask_app.py
 
 
       - name: Relancer l'application Flask sur PythonAnywhere
@@ -52,6 +54,6 @@ jobs:
           API_TOKEN: ${{ secrets.MON_TOKEN_A_MOI }}
           USERNAME: ${{ secrets.MON_USERNAME }}
         run: |
-          echo "Relancement"
+          echo "Relancer l'application FLask sur PythonAnywhere"
           curl -X POST "https://www.pythonanywhere.com/api/v0/user/$USERNAME/webapps/$USERNAME.pythonanywhere.com/reload/" \
           -H "Authorization: Token $API_TOKEN"
