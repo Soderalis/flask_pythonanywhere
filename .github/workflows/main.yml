@@ -1,9 +1,12 @@
 name: Deploiement sur PythonAnywhere
 
 # Doc sur les github actions:
-# https://docs.github.com/fr/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners
-# Doc de l'API PythonAnywhere pour uploader des fichiers, accéder à son token, etc :
+# https://docs.github.com/fr/actions/writing-workflows/quickstart
+# Creation des variables "secrets"
+# https://docs.github.com/fr/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository
+# Doc de l'API PythonAnywhere pour y uploader des fichiers, accéder à son token, etc :
 # https://help.pythonanywhere.com/pages/API
+
 
 on:
   push:
@@ -30,21 +33,25 @@ jobs:
 
       - name: Envoi du code sur PythonAnywhere
         env:
-          API_TOKEN: ${{ secrets.PA_API_TOKEN }}
-          USERNAME: ${{ secrets.PA_USERNAME }}
+          # récupérer le token et le username sur https://www.pythonanywhere.com/user/{TON-NOM-ICI}/account/#api_token
+          # et utiliser cette doc pour les mettre dans github : # pour paramétrer ça, https://docs.github.com/fr/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository
+          API_TOKEN: ${{ secrets.MON_TOKEN_A_MOI }}  
+          USERNAME: ${{ secrets.MON_USERNAME }}
         run: |
           echo "Envoi du code vers PythonAnywhere"
-          curl -v -X POST "https://www.pythonanywhere.com/api/v0/user/$USERNAME/files/path/home/jeandelarbrequicachelaforet/mysite/flask_app.py" \
+          echo "Voici le username utilisé (bon du coup il n'est plus très secret) : $USERNAME"
+          curl -v -X POST "https://www.pythonanywhere.com/api/v0/user/$USERNAME/files/path/home/$USERNAME/mysite/flask_app.py" \
           -H "Authorization: Token $API_TOKEN" \
-          -F "content=@./app.py"
+          -F "content=@./app.py"  # nom du fichier sur le dépôt Git à envoyer
           # utilise le endpoint /api/v0/user/{username}/files/path{path}
           # cf : https://help.pythonanywhere.com/pages/API
 
+
       - name: Relancer l'application Flask sur PythonAnywhere
         env:
-          API_TOKEN: ${{ secrets.PA_API_TOKEN }}
-          USERNAME: ${{ secrets.PA_USERNAME }}
+          API_TOKEN: ${{ secrets.MON_TOKEN_A_MOI }}
+          USERNAME: ${{ secrets.MON_USERNAME }}
         run: |
           echo "Relancement"
-          curl -X POST "https://www.pythonanywhere.com/api/v0/user/$USERNAME/webapps/pythonanywhere.com/reload/" \
+          curl -X POST "https://www.pythonanywhere.com/api/v0/user/$USERNAME/webapps/$USERNAME.pythonanywhere.com/reload/" \
           -H "Authorization: Token $API_TOKEN"
