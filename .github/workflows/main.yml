@@ -37,10 +37,11 @@ jobs:
           # et utiliser cette doc pour les mettre dans github : # pour paramétrer ça, https://docs.github.com/fr/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions#creating-secrets-for-a-repository
           API_TOKEN: ${{ secrets.MON_TOKEN_A_MOI }}  
           USERNAME: ${{ secrets.MON_USERNAME }}
+          YO: ${{ secrets.HELLO }}
         run: |
           echo "Envoi du code vers PythonAnywhere"
-          echo "Voici le username utilisé (bon du coup il n'est plus très secret) : $USERNAME"
-          curl -v -X POST "https://www.pythonanywhere.com/api/v0/user/jeandelarbrequicachelaforet/files/path/home/jeandelarbrequicachelaforet/mysite/flask_app.py" \
+          echo "Voici le username utilisé (bon du coup il n'est plus très secret) : $YO"
+          curl -v -X POST "https://www.pythonanywhere.com/api/v0/user/$USERNAME/files/path/home/jeandelarbrequicachelaforet/mysite/flask_app.py" \
           -H "Authorization: Token $API_TOKEN" \
           -F "content=@./app.py"  # nom du fichier sur le dépôt Git à envoyer, qui sera copié sur pythonanywhere sous le nom de flask_app.py
           # utilise le endpoint /api/v0/user/{username}/files/path{path}
